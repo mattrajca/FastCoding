@@ -30,7 +30,7 @@ static BOOL IsPrimitiveType (char first) {
 		
 		char type = property_copyAttributeValue(property, "T")[0];
 		
-		if (IsPrimitiveType(type)) {
+		if (IsPrimitiveType(type) || type == _C_ID) {
 			SEL selector = NSSelectorFromString(oname);
 			NSMethodSignature *signature = [[self class] instanceMethodSignatureForSelector:selector];
 			
@@ -40,7 +40,14 @@ static BOOL IsPrimitiveType (char first) {
 			
 			void *returnValue = NULL;
 			
-			if (type == _C_INT) {
+			if (type == _C_ID) {
+				id value = nil;
+				[invocation getReturnValue:&value];
+				
+				if (value)
+					[coder encodeObject:value forKey:oname];
+			}
+			else if (type == _C_INT) {
 				returnValue = malloc(sizeof(int));
 				[invocation getReturnValue:returnValue];
 				[coder encodeInt:*(int *)returnValue forKey:oname];
@@ -121,7 +128,8 @@ static BOOL IsPrimitiveType (char first) {
 				NSLog(@"Encoding and decoding character pointers is currently unsupported.");
 			}
 			
-			free(returnValue);
+			if (returnValue)
+				free(returnValue);
 		}
 	}
 }
@@ -140,13 +148,13 @@ static BOOL IsPrimitiveType (char first) {
 		
 		char type = property_copyAttributeValue(property, "T")[0];
 		
+		SEL selector = NSSelectorFromString(setter);
+		NSMethodSignature *signature = [[self class] instanceMethodSignatureForSelector:selector];
+		
+		NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+		[invocation setSelector:selector];
+		
 		if (IsPrimitiveType(type)) {
-			SEL selector = NSSelectorFromString(setter);
-			NSMethodSignature *signature = [[self class] instanceMethodSignatureForSelector:selector];
-			
-			NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
-			[invocation setSelector:selector];
-			
 			void *value = NULL;
 			
 			if (type == _C_INT) {
@@ -222,6 +230,14 @@ static BOOL IsPrimitiveType (char first) {
 				[invocation invokeWithTarget:self];
 				
 				free(value);
+			}
+		}
+		else if (type == _C_ID) {
+			id value = [coder decodeObjectForKey:oname];
+			
+			if (value) {
+				[invocation setArgument:&value atIndex:2];
+				[invocation invokeWithTarget:self];
 			}
 		}
 	}

@@ -26,6 +26,7 @@
 	
 	SEL selector;
 	Class classValue;
+	NSString *string;
 }
 
 @property (nonatomic, assign) int integer;
@@ -45,5 +46,6 @@
 
 @property (nonatomic, assign) SEL selector;
 @property (nonatomic, assign) Class classValue;
+@property (nonatomic, copy) NSString *string;
 
 @end

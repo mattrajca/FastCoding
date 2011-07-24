@@ -133,4 +133,11 @@
 				   @"Couldn't unarchive class value");
 }
 
+- (void)testString {
+	blob.string = [NSString stringWithString:@"John Doe"];
+	
+	STAssertEqualObjects([self unarchivedBlob].string, blob.string,
+						 @"Couldn't unarchive NSString value");
+}
+
 @end

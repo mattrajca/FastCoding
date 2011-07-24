@@ -15,7 +15,7 @@
 @synthesize longValue, unsignedLongValue, longLongValue, unsignedLongLongValue;
 @synthesize floatingPointValue, doubleValue;
 @synthesize character, unsignedCharacter, boolean;
-@synthesize selector, classValue;
+@synthesize selector, classValue, string;
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
 	[self encodePropertiesWithCoder:aCoder];
@@ -25,6 +25,11 @@
 	self = [super init];
 	[self decodePropertiesWithCoder:aDecoder];
 	return self;
+}
+
+- (void)dealloc {
+	[string release];
+	[super dealloc];
 }
 
 @end
