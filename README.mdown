@@ -33,4 +33,4 @@ The `FastCoding` category on NSObject reduces the amount of code developers have
 		[self encodePropertiesWithCoder:aCoder];
 	}
 
-To use `FastCoding` on projects targeting Mac OS X 10.7 or later, simply copy the `NSObject+FastCoding.[hm]` files over to your Xcode project. Earlier releases of Mac OS X are currently unsupported. The FastCoding Xcode project itself includes unit tests which can be run to discern regressions. All of FastCoding's functionality takes advantage of Objective-C's dynamic runtime.
+To use `FastCoding` on projects targeting Mac OS X 10.7 or later, simply copy the `NSObject+FastCoding.[hm]` files over to your Xcode project. Earlier releases of Mac OS X are currently unsupported. The `FastCoding` Xcode project includes unit tests which can be run to discern regressions. Additionally, all of `FastCoding`'s functionality takes advantage of Objective-C's dynamic runtime.
