@@ -1,0 +1,36 @@
+FastCoding
+==========
+
+The `FastCoding` category on NSObject reduces the amount of code developers have to write to archive properties defined on their classes. By utilizing the convenience methods `FastCoding` provides while implementing `initWithCoder:` and `encodeWithCoder:`, repetitive code that looks like this:
+
+	- (id)initWithCoder:(NSCoder *)aDecoder {
+		self = [super init];
+		if (self) {
+			self.name = [aDecoder decodeObjectForKey:@"name"];
+			self.size = [aDecoder decodeSizeForKey:@"size"];
+			self.color = [aDecoder decodeObjectForKey:@"color"];
+		}
+		return self;
+	}
+	
+	- (void)encodeWithCoder:(NSCoder *)aCoder {
+		[aCoder encodeObject:name forKey:@"name"];
+		[aCoder encodeSize:size forKey:@"size"];
+		[aCoder encodeObject:color forKey:@"color"];
+	}
+
+... can quickly be turned into this:
+
+	- (id)initWithCoder:(NSCoder *)aDecoder {
+		self = [super init];
+		if (self) {
+			[self decodePropertiesWithCoder:aDecoder];
+		}
+		return self;
+	}
+	
+	- (void)encodeWithCoder:(NSCoder *)aCoder {
+		[self encodePropertiesWithCoder:aCoder];
+	}
+
+To use `FastCoding` on projects targeting Mac OS X 10.7 or later, simply copy the `NSObject+FastCoding.[hm]` files over to your Xcode project. Earlier releases of Mac OS X are currently unsupported. The FastCoding Xcode project itself includes unit tests which can be run to discern regressions. All of FastCoding's functionality takes advantage of Objective-C's dynamic runtime.
