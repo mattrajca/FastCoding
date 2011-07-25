@@ -18,7 +18,13 @@ static BOOL IsPrimitiveType (char first) {
 			first == _C_LNG || first == _C_ULNG || first == _C_SHT || first == _C_USHT);
 }
 
++ (NSArray *)propertiesToSkipDuringFastCoding {
+	return [NSArray array];
+}
+
 - (void)encodePropertiesWithCoder:(NSCoder *)coder {
+	NSArray *skipKeys = [[self class] propertiesToSkipDuringFastCoding];
+	
 	unsigned int count = 0;
 	objc_property_t *properties = class_copyPropertyList([self class], &count);
 	
@@ -27,6 +33,9 @@ static BOOL IsPrimitiveType (char first) {
 		
 		const char *name = property_getName(property);
 		NSString *oname = [NSString stringWithUTF8String:name];
+		
+		if ([skipKeys containsObject:oname])
+			continue;
 		
 		char type = property_copyAttributeValue(property, "T")[0];
 		
@@ -135,6 +144,8 @@ static BOOL IsPrimitiveType (char first) {
 }
 
 - (void)decodePropertiesWithCoder:(NSCoder *)coder {
+	NSArray *skipKeys = [[self class] propertiesToSkipDuringFastCoding];
+	
 	unsigned int count = 0;
 	objc_property_t *properties = class_copyPropertyList([self class], &count);
 	
@@ -142,8 +153,11 @@ static BOOL IsPrimitiveType (char first) {
 		objc_property_t property = properties[n];
 		
 		const char *name = property_getName(property);
-		
 		NSString *oname = [NSString stringWithUTF8String:name];
+		
+		if ([skipKeys containsObject:oname])
+			continue;
+		
 		NSString *setter = [NSString stringWithFormat:@"set%c%s:", toupper(name[0]), name+1];
 		
 		char type = property_copyAttributeValue(property, "T")[0];

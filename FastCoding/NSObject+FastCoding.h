@@ -9,6 +9,12 @@
 
 @interface NSObject (FastCoding)
 
+// Implement the method below to return an array of NSStrings representing the names of
+// properties you wish to skip during encoding and decoding.
+// The default implementation returns an empty array.
+
++ (NSArray *)propertiesToSkipDuringFastCoding;
+
 - (void)encodePropertiesWithCoder:(NSCoder *)coder;
 - (void)decodePropertiesWithCoder:(NSCoder *)coder;
 
